@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-def process_image(self, image, config):
+def process_image(image, config):
     frame = cv2.GaussianBlur(frame, (5, 5), 0)
     hsv = cv2.cvtolor(frame, cv2.COLOR_BGR2HSV)
 
