@@ -37,29 +37,24 @@ while True:
     mask = cv2.inRange(hsv, low, high)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, numpy.ones((5, 5), numpy.uint8))
     
-    im2, cnts, hiersrchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    im2, cnts, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(frame, cnts, -1, (0, 255, 0), 3)
     
     largest = None
-    for cnt in cnts:
-        hull = cv2.convexHull(cnt)
-        if largest is None or cv2.contourArea(largest) < cv2.contourArea(hull):
-            second_largest = largest;
-            largest = hull
-            
-    if largest is not None:
-        rect = cv2.minAreaRect(largest)
-        second_rect = rect
-        if second_largest is not None:
-            second_rect = cv2.minAreaRect(second_largest)
-        box=cv2.boxPoints(rect)
-        second_box = cv2.boxPoints(second_rect)
+    convex_hulls = [cv2.convexHull(cnt) for cnt in cnts]
+    sorted_hulls = sorted(convex_hulls, cmp=lambda x, y : int(cv2.contourArea(y) - cv2.contourArea(x)))
+    biggest_two = []
+    if len(sorted_hulls) > 1:
+        biggest_two = sorted_hulls[:2]
+    elif len(sorted_hulls) == 1:
+        biggest_two = sorted_hulls[:1]
+
+    for i in xrange(len(biggest_two)):
+        rect = cv2.minAreaRect(biggest_two[i])
+        box = cv2.boxPoints(rect)
         box = numpy.int0(box)
-        second_box = numpy.int0(second_box)
-        cv2.drawContours(frame,[box],-1,(255,0,0),3)
-        cv2.drawContours(frame,[second_box],-1,(255,0,0),3)
-        cv2.drawContours(frame,[largest],-1,(0,255,0),3)
-        cv2.drawContours(frame,[second_largest],-1,(0,255,0),3)
+        print('box %d is %s' %(i, str(box)))
+        cv2.drawContours(frame, [box], -1, (255, 0, 0), 3)
             
     overlay = cv2.bitwise_and(frame, frame, mask=mask)
     cv2.imshow("original Pic", frame)
