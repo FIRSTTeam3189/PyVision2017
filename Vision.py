@@ -15,9 +15,9 @@
     
   # Thats it.
 
-import openCV, numpy , VisionProcesor, VisionConfig, VisionTable
+import cv2, numpy , VisionProcesor, VisionConfiguration, VisionTable
 
-config = VisionConfig.VisionConfig()
+config = VisionConfiguration.VisionConfiguration()
 
 table = VisionTable.VisionTable('vision')
 
@@ -27,6 +27,6 @@ while True:
     boxes = VisionProcessor.process_image(frame, config)
     
     for i in xrange(len(boxes)):
-        table.send_box(i, boxes[i])
+        table.send_box( boxes[i], i)
 
 
