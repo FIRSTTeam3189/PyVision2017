@@ -5,10 +5,14 @@ Created on Jan 15, 2017
 '''
 
 import cv2
+from FrameGrabbers import MultithreadedFrameGrabber
+from VisionConfiguration import VisionConfiguration
 import numpy
 def pa(x):
     pass
-grabber = cv2.VideoCapture(0)
+
+config = VisionConfiguration()
+grabber = MultithreadedFrameGrabber(0, config).start()
 
 cv2.namedWindow("controls")
 cv2.createTrackbar("H Low", 'controls', 0, 255, pa)
@@ -17,11 +21,18 @@ cv2.createTrackbar('V Low', 'controls', 0, 255, pa)
 cv2.createTrackbar('H High', 'controls', 0, 255, pa)
 cv2.createTrackbar('S High', "controls", 0, 255, pa)
 cv2.createTrackbar('V High', 'controls', 0, 255, pa)
-cv2.setTrackbarPos('H High', 'controls', 255)
-cv2.setTrackbarPos('S High', 'controls', 255)
-cv2.setTrackbarPos('V High', 'controls', 255)
+cv2.setTrackbarPos('H High', 'controls', config.high_range[0])
+cv2.setTrackbarPos('S High', 'controls', config.high_range[1])
+cv2.setTrackbarPos('V High', 'controls', config.high_range[2])
+cv2.setTrackbarPos('H Low', 'controls', config.low_range[0])
+cv2.setTrackbarPos('S Low', 'controls', config.low_range[1])
+cv2.setTrackbarPos('V Low', 'controls', config.low_range[2])
+
+low = None
+high = None
+
 while True:
-    retrieve, frame = grabber.read()
+    frame = grabber.current_frame
     frame = cv2.GaussianBlur(frame, (5, 5), 0)    
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -53,16 +64,19 @@ while True:
         rect = cv2.minAreaRect(biggest_two[i])
         box = cv2.boxPoints(rect)
         box = numpy.int0(box)
-        print('box %d is %s' %(i, str(box)))
         cv2.drawContours(frame, [box], -1, (255, 0, 0), 3)
             
     overlay = cv2.bitwise_and(frame, frame, mask=mask)
     cv2.imshow("original Pic", frame)
-    cv2.imshow("hello peoples!", mask)
     cv2.imshow("the overlay", overlay)
     if cv2.waitKey(1) & 0xff == ord("q"):
         break
     
-grabber.release()
+
+config.low_range = low
+config.high_range = high
+grabber.stop()
+grabber.sync_camera_props()
 cv2.destroyAllWindows()
+config.sync()
     
