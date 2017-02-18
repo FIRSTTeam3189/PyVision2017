@@ -5,6 +5,7 @@ IS_ONLINE = 'is_online'
 SHOULD_SHUTDOWN = 'should_shutdown'
 TAKE_SNAPSHOT = 'should_snapshot'
 LOOP_AMOUNT = 'loop_amount'
+BOXES_FOUND = 'boxes_found'
 
 class VisionTable(object):
     def __init__(self, table_name):
@@ -26,3 +27,6 @@ class VisionTable(object):
         
     def send_loops(self, loops):
         self.table.putNumber(LOOP_AMOUNT, loops)
+
+    def send_boxes_found(self, amount):
+        self.table.putNumber(BOXES_FOUND, amount)

@@ -28,7 +28,7 @@ class MultithreadedFrameGrabber(object):
             self.stream.set(cv2.CAP_PROP_WHITE_BALANCE_RED_V, config.white_balance_red)
             self.stream.set(cv2.CAP_PROP_BRIGHTNESS, config.brightness)
             
-        self.frame, self.grabbed = self.stream.read()
+        self.grabbed, self.frame = self.stream.read()
         self.read_fails = 0
         self.should_stop = False
 
