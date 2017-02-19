@@ -51,4 +51,44 @@ def draw_center_line(frame, boxes):
         avg_top = (avg, height)
         cv2.line(frame, avg_bottom, avg_top, (0, 255, 0), 3)
 
+    # Draw info of boxes
+    if len(boxes) == 2:
+        box_one_x = boxes[0][0][0] + boxes[0][1][0] + boxes[0][2][0] + boxes[0][3][0]
+        box_two_x = boxes[1][0][0] + boxes[1][1][0] + boxes[1][2][0] + boxes[1][3][0]
+        if box_one_x > box_two_x:
+            right_box = boxes[0]
+            left_box  = boxes[1]
+        else:
+            right_box = boxes[1]
+            left_box = boxes[0]
+
+        # Find out inner distance
+        inner_left = sorted(left_box, cmp=lambda x, y: y[0] - x[0])[0:2]
+        inner_right = sorted(right_box, cmp=lambda x, y: x[0] - y[0])[0:2]
+        
+        # Average x's
+        inner_left_x = (inner_left[0][0] + inner_left[1][0]) / 2
+        inner_right_x = (inner_right[0][0] + inner_right[1][0]) / 2
+        
+        cv2.line(frame, (inner_left_x, 0), (inner_left_x, height), (255, 0, 0), 3)
+        cv2.line(frame, (inner_right_x, 0), (inner_right_x, height), (0, 0, 255), 3)
+
+        # Box Inner Height (bih)
+        bih_one = abs(inner_left[0][1] - inner_left[1][1])
+        bih_two = abs(inner_right[0][1] - inner_right[1][1])
+        if  bih_one > bih_two:
+            bigger_box = inner_left
+        else:
+            bigger_box = inner_right
+
+        box_height = abs(bigger_box[0][1] - bigger_box[1][1])
+        cv2.line(frame, (bigger_box[0][0], bigger_box[0][1]), (bigger_box[1][0], bigger_box[1][1]), (64, 255, 64), 3)
+
+        print("Inner Distance: %d Bigger Height: %d" % (inner_right_x - inner_left_x, box_height))
+        """
+        SEND TO SMART DASHBOARD
+        s = bigHeight/115;
+        u = arcsin((s * InnerDistance)/144);
+        x = 264 * cos(u);
+        """
     return frame    
