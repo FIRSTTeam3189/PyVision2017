@@ -1,6 +1,6 @@
 from networktables import NetworkTables
 
-NetworkTables.initialize(server='10.31.89.2')
+NetworkTables.initialize(server='roborio-3189-frc.local')
 IS_ONLINE = 'is_online'
 SHOULD_SHUTDOWN = 'should_shutdown'
 TAKE_SNAPSHOT = 'should_snapshot'

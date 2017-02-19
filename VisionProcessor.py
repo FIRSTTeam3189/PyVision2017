@@ -29,4 +29,26 @@ def process_image(frame, config):
         box = cv2.boxPoints(rect)
         box = np.int0(box)
         boxes.append(box)
+
+    if config.show_image:
+        cv2.imshow('Processed', mask)
+        
     return boxes
+
+def draw_center_line(frame, boxes):
+    height, width, _ = frame.shape
+
+    # Draw frame center first
+    x_center_bottom = (width/2, 0)
+    x_center_top = (width/2, height)
+    cv2.line(frame, x_center_bottom, x_center_top, (255, 0, 255), 3)
+
+    if len(boxes) > 0:
+        x_sum = reduce(lambda tot, box: tot + box[0][0] + box[1][0] + box[2][0] + box[3][0], boxes, 0)
+        
+        avg = int(x_sum/(len(boxes)*4))
+        avg_bottom = (avg, 0)
+        avg_top = (avg, height)
+        cv2.line(frame, avg_bottom, avg_top, (0, 255, 0), 3)
+
+    return frame    

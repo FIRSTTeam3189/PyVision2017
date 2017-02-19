@@ -14,10 +14,14 @@ WB_RED_KEY = 'wb_red'
 BRIGHTNESS_KEY = 'brightness'
 CONTRAST_KEY = 'contrast'
 
+IP_KEY = 'ip'
+SHOW_IMAGE_KEY = 'show_image'
+
 FILE_LOCATION = 'config.properties'
 
 RANGE_SECTION = 'color_ranges'
 CAMERA_PROP_SECTION = 'camera_props'
+GENERAL_SECTION = 'general'
 
 class VisionConfiguration(object):
     def __init__(self):
@@ -54,6 +58,47 @@ class VisionConfiguration(object):
         except ValueError:
             return self.config.getfloat(section, key)
         return default_value
+
+    def get_str_key(self, section, key, default_value):
+        """
+        Gets a string value from key in configuration file
+        """
+        try:
+            return self.config.get(section, key)
+        except cP.NoSectionError:
+            pass
+        except cP.NoOptionError:
+            pass
+        except ValueError:
+            return self.config.get(section, key)
+        return default_value
+
+    def set_str_key(self, section, key, value):
+        """
+        Set a key in the config file
+        """
+        try:
+            self.config.add_section(section)
+        except cP.DuplicateSectionError:
+            pass
+
+        self.config.set(section, key, value)
+
+    @property
+    def ip(self):
+        return self.get_str_key(GENERAL_SECTION, IP_KEY, '10.31.89.2')
+
+    @ip.setter
+    def ip(self, value):
+        return self.set_str_key(GENERAL_SECTION, IP_KEY, value)
+
+    @property
+    def show_image(self):
+        return self.get_key(GENERAL_SECTION, SHOW_IMAGE_KEY, 1)
+
+    @show_image.setter
+    def show_image(self, value):
+        return self.set_key(GENERAL_SECTION, SHOW_IMAGE_KEY, value)
 
     @property
     def exposure(self):

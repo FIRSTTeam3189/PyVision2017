@@ -4,6 +4,10 @@ config = VisionConfiguration.VisionConfiguration()
 
 table = VisionTable.VisionTable('vision')
 
+config.show_image = 1
+config.ip = 'roborio-3189-frc.local'
+config.sync()
+
 grabber = FrameGrabbers.MultithreadedFrameGrabber(0, config).start()
 loops = 0
 should_shutdown = False
@@ -21,9 +25,16 @@ while not should_shutdown:
 
     # See if we should shut down
     should_shutdown = table.get_should_shutdown()
-    print loops
+
+    if loops % 100 == 0:
+        print loops
+
+    if config.show_image:
+        frame = VisionProcessor.draw_center_line(frame, boxes)
+        cv2.imshow('Original', frame)
+        if cv2.waitKey(1) & 0xff == ord("q"):
+            break
     
     for i in xrange(len(boxes)):
         table.send_box( boxes[i], i)
-
 
