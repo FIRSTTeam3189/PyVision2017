@@ -1,4 +1,5 @@
 import cv2, numpy , VisionProcessor, VisionConfiguration, VisionTable, FrameGrabbers
+from BoxInfo import BoxInfo
 
 config = VisionConfiguration.VisionConfiguration()
 
@@ -30,11 +31,16 @@ while not should_shutdown:
         print loops
 
     if config.show_image:
-        frame = VisionProcessor.draw_center_line(frame, boxes)
+        frame = VisionProcessor.draw_box_info(frame, boxes)
         cv2.imshow('Original', frame)
         if cv2.waitKey(1) & 0xff == ord("q"):
             break
     
     for i in xrange(len(boxes)):
         table.send_box( boxes[i], i)
+
+    if len(boxes) == 2:
+        table.send_box_info(BoxInfo(boxes))
+    else:
+        table.send_box_info(None)
 
