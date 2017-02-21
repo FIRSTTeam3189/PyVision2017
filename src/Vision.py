@@ -5,18 +5,21 @@ config = VisionConfiguration.VisionConfiguration()
 
 table = VisionTable.VisionTable('vision')
 
-config.show_image = 1
-config.ip = 'roborio-3189-frc.local'
-config.sync()
-
 grabber = FrameGrabbers.MultithreadedFrameGrabber(0, config).start()
 loops = 0
+fails = 0
 should_shutdown = False
 table.send_is_online(True)
 
 while not should_shutdown:
     # Process image read
     frame = grabber.current_frame
+    if frame is None:
+        fails += 1
+        if fails > 200:
+            print('Fail limit exceeded')
+            exit(-1)
+        continue
     boxes = VisionProcessor.process_image(frame, config)
 
     # Send how many images processed, and send how many boxes found

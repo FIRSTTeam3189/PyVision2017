@@ -8,6 +8,8 @@ Restart=always
 RestartSec=10
 SyslogIdentifier=robot-vision
 User=robot-user
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/robot-user/.Xauthority
 
 [Install]
 WantedBy=multi-user.target

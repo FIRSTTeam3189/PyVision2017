@@ -37,7 +37,7 @@ getent passwd $USER > /dev/null 2>&1 && ret=true
 if $ret; then
 	echo ""
 else
-	useradd -p $(openssl passwd -1 $PASSWORD) $USER
+	useradd -p $(openssl passwd -1 $PASSWORD) $USER -G users
 fi
 
 # Create service if needed, otherwise stop it

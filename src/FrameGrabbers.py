@@ -10,6 +10,9 @@ class MultithreadedFrameGrabber(object):
         self.port = port
         self.config = config
         self.stream = cv2.VideoCapture(port)
+        if not self.stream.isOpened():
+            print("Stream could not open")
+            self.stream.open(port)
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.stream.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
