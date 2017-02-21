@@ -1,0 +1,13 @@
+[Unit]
+Description=Robotics Vision Script
+
+[Service]
+WorkingDirectory=/var/opt/robot-vision/
+ExecStart=/usr/local/bin/cvpython /var/opt/robot-vision/Vision.py
+Restart=always
+RestartSec=10
+SyslogIdentifier=robot-vision
+User=robot-user
+
+[Install]
+WantedBy=multi-user.target
