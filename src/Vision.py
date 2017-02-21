@@ -1,5 +1,6 @@
 import cv2, numpy , VisionProcessor, VisionConfiguration, VisionTable, FrameGrabbers
 from BoxInfo import BoxInfo
+from time import sleep
 
 config = VisionConfiguration.VisionConfiguration()
 
@@ -16,6 +17,7 @@ while not should_shutdown:
     frame = grabber.current_frame
     if frame is None:
         fails += 1
+	sleep(.1)
         if fails > 200:
             print('Fail limit exceeded')
             exit(-1)

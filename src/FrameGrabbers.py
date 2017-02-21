@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from time import sleep
 from threading import Thread
 
 
@@ -10,9 +11,18 @@ class MultithreadedFrameGrabber(object):
         self.port = port
         self.config = config
         self.stream = cv2.VideoCapture(port)
-        if not self.stream.isOpened():
+        fails = 0
+	while not self.stream.isOpened():
             print("Stream could not open")
-            self.stream.open(port)
+            fails += 1
+            if fails > 50:
+                raise RuntimeError("Failed to open stream")
+            try:
+                self.stream.release()
+                self.stream = cv2.VideoCapture(port)
+                sleep(.1)
+            except:
+                pass
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.stream.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)

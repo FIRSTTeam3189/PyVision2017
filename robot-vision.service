@@ -7,9 +7,9 @@ ExecStart=/usr/local/bin/cvpython /var/opt/robot-vision/Vision.py
 Restart=always
 RestartSec=10
 SyslogIdentifier=robot-vision
-User=robot-user
+User=pi
 Environment=DISPLAY=:0
-Environment=XAUTHORITY=/home/robot-user/.Xauthority
+Environment=XAUTHORITY=/home/pi/.Xauthority
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=graphical.target

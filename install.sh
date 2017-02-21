@@ -1,6 +1,6 @@
 #!/bin/sh
 INSTALL_DIR=/var/opt/robot-vision
-USER=robot-user
+USER=pi
 PASSWORD=123456
 PYTHON_INSTALL_PATH=/usr/local/bin/cvpython
 PYTHON_LOCATION=/home/pi/.virtualenvs/cv/bin/python
