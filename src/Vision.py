@@ -80,7 +80,9 @@ except Exception as e:
     print(e)
     grabber.stop()
     shutdown(69, 3)
-    
+
+if config.show_image:
+    cv2.destroyAllWindows()
 grabber.stop()
 status.release()
 sleep(.5)
