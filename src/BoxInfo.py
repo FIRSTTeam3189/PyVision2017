@@ -1,3 +1,4 @@
+#encoding=utf-8
 import cv2
 import numpy as np
 import numpy.linalg as la
@@ -7,7 +8,12 @@ PIXEL_HEIGHT_CONST = 150.0 # In Pixels
 DISTANCE_CONST = 2 # In Feet
 TAPE_WIDTH = 2.0 # In Inches
 CAM_FOVY = 34.3 # In Degrees
-CAM_FOVX = 61 # In Degrees
+CAM_FOVX = 61.0 # In Degrees
+CAM_RES_X = 640.0
+L_PT = 3.125 # In Inches
+L_P = 11.0 # In Inches
+PHI = math.atan(L_P/L_PT) # In Radians
+H = math.sqrt(L_P**2 + L_PT**2)
 
 class BoxInfo(object):
     def __init__(self, boxes):
@@ -45,8 +51,10 @@ class BoxInfo(object):
         bih_two = abs(inner_right_points[0][1] - inner_right_points[1][1])
         if  bih_one > bih_two:
             bigger_box = inner_left_points
+            bigger_inner_x = self._inner_left_x
         else:
             bigger_box = inner_right_points
+            bigger_inner_x = self._inner_right_x
 
         self._bigger_box_height = abs(bigger_box[0][1] - bigger_box[1][1])
 
@@ -65,16 +73,23 @@ class BoxInfo(object):
         b = (PIXEL_HEIGHT_CONST/bigger_height*DISTANCE_CONST) * 12
         c = TAPE_WIDTH
         cos_theta = (b**2 + c**2 - a**2)/(2*b*c)
-        self._u = 0
+        theta = 0
         
         # Find U
         try:
-            self._u = math.acos(cos_theta)
+            theta = math.acos(cos_theta)
         except ValueError:
-            self._u = -1
+            self._u = 0
 
-        print('Dist A: %.2f Dist B: %.2f Cos Theta: %.2f Theta: %.2f' \
-               % (a, b, cos_theta, self._u))
+        omega = 180 - PHI - theta
+        d2 = math.sqrt(h**2 + a**2 - 2*h*a*cos(omega))
+        lambda_angle = math.asin(math.sin(omega)*h/d2)
+        tau = CAM_FOVX/CAM_RES_X*abs(bigger_inner_x - (CAM_RES_X/2.0))
+
+        self._u =  lambda_angle + tau
+
+        print("d1: %.2f d2: %.2f Ω: %.2f λ: %.2f τ: %.2f u: %.2f" \
+              % (a, d2, omega, lambda_angle, tau, self._u))
 
         # TODO: Find X
         self._x = 0

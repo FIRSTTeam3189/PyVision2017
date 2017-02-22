@@ -76,7 +76,7 @@ try:
             table.send_box_info(BoxInfo(boxes))
         else:
             table.send_box_info(None)
-except Error as e:
+except Exception as e:
     print(e)
     grabber.stop()
     shutdown(69, 3)

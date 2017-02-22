@@ -62,7 +62,7 @@ fi
 find $INSTALL_DIR -maxdepth 1 -type f -not -name '*.properties' -delete
 
 # Copy source folder
-cp src/* $INSTALL_DIR/
+cp src/*.py $INSTALL_DIR/
 cp $CONFIG_FILE $INSTALL_DIR/
 
 # Change perms
