@@ -2,6 +2,9 @@ import cv2, numpy , VisionProcessor, VisionConfiguration, VisionTable, FrameGrab
 from BoxInfo import BoxInfo
 from time import sleep
 from StatusLights import StatusLights
+from imutils.video import FPS
+import sys
+import traceback
 
 status = StatusLights()
 config = VisionConfiguration.VisionConfiguration()
@@ -26,11 +29,16 @@ table = VisionTable.VisionTable('vision')
 grabber = None
 
 try:
-    grabber = FrameGrabbers.MultithreadedFrameGrabber(0, config).start()
-except:
+    grabber = FrameGrabbers.PiCameraFrameGrabber(config).start()
+except Exception as e:
+    traceback.print_exc()
+    print(e)
     print("Failed to setup grabber")
     shutdown(1, 10)
-    
+
+while grabber.current_frame is None:
+    continue
+   
 loops = 0
 fails = 0
 should_shutdown = False
@@ -77,6 +85,7 @@ try:
         else:
             table.send_box_info(None)
 except Exception as e:
+    traceback.print_exc()
     print(e)
     grabber.stop()
     shutdown(69, 3)

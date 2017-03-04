@@ -1,11 +1,81 @@
 import cv2
 import numpy as np
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 from time import sleep
 from threading import Thread
+from Queue import Queue
 
 
 READ_FAILS_TIL_SHUTDOWN = 10
 
+class PiCameraFrameGrabber(object):
+    def __init__(self, config=None):
+        self.camera = PiCamera()
+        
+        self.camera.exposure_mode = 'off'
+        self.camera.awb_mode = 'fluorescent'
+        self.camera.drc_strength = 'off'
+        self.queue = Queue(maxsize=30)
+        if config is None:
+            self.camera.resolution = (1280, 720)
+            self.camera.framerate = 60
+            self.camera.exposure_compensation = -12
+            self.camera.iso = 400
+            self.camera.contrast = 50
+            self.camera.brightness = 0
+            self.camera.awb_gains = (0, 0)
+            self.raw_capture = PiRGBArray(self.camera, size=(1280, 720))
+            self.resolution = (1280, 720)
+        else:
+            self.camera.resolution = config.resolution
+            self.camera.framerate = config.framerate
+            self.camera.exposure_compensation = int(config.exposure)
+            self.camera.brightness = int(config.brightness)
+            self.camera.iso = int(config.iso)
+            self.camera.contrast = int(config.contrast)
+            self.awb_gains = config.white_balance
+            self.raw_capture = PiRGBArray(self.camera, size=config.resolution)
+            self.resolution = config.resolution
+
+        sleep(.5)
+        self.read_fails = 0
+        self.should_stop = False
+        self.frame = None
+
+    def stop(self):
+        self.should_stop = True
+
+    def start(self):
+        Thread(target=self.update, args=()).start()
+        return self
+
+    def update(self):
+        for frame in self.camera.capture_continuous(self.raw_capture, format='bgr', use_video_port=True):
+            self.frame = frame.array
+
+            if frame is None:
+                self.read_fails += 1
+                self.frame = None
+            else:
+                self.read_fails = 0
+
+            if self.read_fails > READ_FAILS_TIL_SHUTDOWN:
+                self.stop()
+
+            if self.should_stop:
+                break
+
+            self.raw_capture.truncate(0)
+            self.raw_capture.seek(0)
+
+        self.raw_capture.close()
+        self.camera.close()
+
+    @property
+    def current_frame(self):
+        return self.frame
+    
 class MultithreadedFrameGrabber(object):
     def __init__(self, port=0, config=None):
         self.port = port

@@ -13,6 +13,10 @@ WB_BLUE_KEY = 'wb_blue'
 WB_RED_KEY = 'wb_red'
 BRIGHTNESS_KEY = 'brightness'
 CONTRAST_KEY = 'contrast'
+ISO_KEY = 'iso'
+FRAMERATE_KEY = 'framerate'
+RESOLUTION_X_KEY = 'width'
+RESOLUTION_Y_KEY = 'height'
 
 IP_KEY = 'ip'
 SHOW_IMAGE_KEY = 'show_image'
@@ -123,6 +127,36 @@ class VisionConfiguration(object):
     @white_balance_red.setter
     def white_balance_red(self, value):
         return self.set_key(CAMERA_PROP_SECTION, WB_RED_KEY, value)
+
+    @property
+    def white_balance(self):
+        return (self.white_balance_red, self.white_balance_blue)
+
+    @property
+    def resolution(self):
+        return (self.get_key(CAMERA_PROP_SECTION, RESOLUTION_X_KEY, 720),
+                self.get_key(CAMERA_PROP_SECTION, RESOLUTION_Y_KEY, 1280))
+
+    @resolution.setter
+    def resolution(self, value):
+        self.set_key(CAMERA_PROP_SECTION, RESOLUTION_X_KEY, value[0])
+        self.set_key(CAMERA_PROP_SECTION, RESOLUTION_Y_KEY, value[1])
+
+    @property
+    def iso(self):
+        return self.get_key(CAMERA_PROP_SECTION, ISO_KEY, 400)
+
+    @iso.setter
+    def iso(self, value):
+        self.set_key(CAMERA_PROP_SECTION, ISO_KEY, value)
+
+    @property
+    def framerate(self):
+        return self.get_key(CAMERA_PROP_SECTION, FRAMERATE_KEY, 60)
+
+    @framerate.setter       
+    def framerate(self, value):
+        self.set_key(CAMERA_PROP_SECTION, FRAMERATE_KEY, value)
 
     @property
     def brightness(self):
