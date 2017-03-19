@@ -150,7 +150,10 @@ def draw_box_info(frame, boxes):
         # Draw info about box on screen
         font = cv2.FONT_HERSHEY_PLAIN
         cv2.putText(frame, 'U: %.4f' % math.degrees(info.u), (10, 20), font, 1.5, (255, 0, 255), 3, cv2.LINE_AA)
-        cv2.putText(frame, 'Box Height: %d' % info.box_height, (10, 50), font, 1.5, (255, 0, 255), 3, cv2.LINE_AA)
+        cv2.putText(frame, '%s Box Height: %d' % (info.bigger_box_name, info.box_height), (10, 50), font, 1.5, (255, 0, 255), 3, cv2.LINE_AA)
         cv2.putText(frame, 'Inner Distance: %d' % info.inner_distance, (10, 90), font, 1.5, (255, 0, 255), 3, cv2.LINE_AA)
+        cv2.putText(frame, 'Left: %s %s %s %s' % (str(info.left_box[0]), str(info.left_box[1]), str(info.left_box[2]), str(info.left_box[3])), (10, 120), font, 1.5, (255, 255, 0), 3, cv2.LINE_AA)
+        cv2.putText(frame, 'Left: %s %s %s %s' % (str(info.right_box[0]), str(info.right_box[1]), str(info.right_box[2]), str(info.right_box[3])), (10, 150), font, 1.5, (255, 255, 0), 3, cv2.LINE_AA)
+                    
 
     return frame

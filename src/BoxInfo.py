@@ -4,7 +4,7 @@ import numpy as np
 import numpy.linalg as la
 import math
 
-PIXEL_HEIGHT_CONST = 150.0 # In Pixels
+PIXEL_HEIGHT_CONST = 137.0 # In Pixels
 DISTANCE_CONST = 24 # In Inches
 TAPE_WIDTH = 2.0 # In Inches
 CAM_FOVY = 34.3 # In Degrees
@@ -40,20 +40,27 @@ class BoxInfo(object):
             right_box = boxes[1]
 
         # Find inner left and inner right edges and distance
-        left_points = sorted(left_box, cmp=lambda x,y: y[0]-x[0])
-        right_points = sorted(right_box, cmp=lambda x,y : x[0]-y[0])
+        left_points = sorted(left_box,   cmp=lambda a,b: b[0] - a[0])
+        right_points = sorted(right_box, cmp=lambda a,b: a[0] - b[0])
+        self._left_box = left_box
+        self._right_box = right_box
 
         self._inner_left_x = (left_points[0][0] + left_points[1][0])/2
         self._inner_right_x = (right_points[0][0] + right_points[1][0])/2
 
-        if  self._x_avg < (CAM_RES_X/2.0):
+        left_height = abs(left_points[0][1] - left_points[1][1])
+        right_height = abs(right_points[0][1] - right_points[1][1])
+
+        if  left_height > right_height:
             bigger_box = left_points
             bigger_inner_x = self._inner_left_x
             lambda_mult = 1
+            self._bigger_box_name = "L"
         else:
             bigger_box = right_points
             bigger_inner_x = self._inner_right_x
             lambda_mult = 1
+            self._bigger_box_name = "R"
 
         self._bigger_box_height = abs(bigger_box[0][1] - bigger_box[1][1])
 
@@ -80,6 +87,9 @@ class BoxInfo(object):
         tau = math.radians(CAM_FOVX/CAM_RES_X*(self._x_avg - (CAM_RES_X/2.0)))
 
         self._u =  lambda_angle + tau
+
+        #print("Left: " + str(left_box[0]) + " " + str(left_box[1]) + " " + str(left_box[2]) + " " + str(left_box[3]))
+        #print("Right: " + str(right_box[0]) + " " + str(right_box[1]) + " " + str(right_box[2]) + " " + str(right_box[3]))
 
         print("d1: %.2f d2: %.2f d3: %.2f θ: %.2f Ω: %.2f λ: %.2f τ: %.2f u: %.2f" \
               % (a, d2, b, math.degrees(theta), math.degrees(omega), math.degrees(lambda_angle), math.degrees(tau), math.degrees(self._u)))
@@ -114,3 +124,15 @@ class BoxInfo(object):
     @property
     def inner_distance(self):
         return self._inner_right_x - self._inner_left_x
+
+    @property
+    def left_box(self):
+        return self._left_box
+
+    @property
+    def right_box(self):
+        return self._right_box
+
+    @property
+    def bigger_box_name(self):
+        return self._bigger_box_name

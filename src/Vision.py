@@ -29,7 +29,7 @@ table = VisionTable.VisionTable('vision')
 grabber = None
 
 try:
-    grabber = FrameGrabbers.PiCameraFrameGrabber(config).start()
+    grabber = FrameGrabbers.MultithreadedFrameGrabber(config=config).start()
 except Exception as e:
     traceback.print_exc()
     print(e)
