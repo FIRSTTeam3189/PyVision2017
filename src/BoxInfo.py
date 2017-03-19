@@ -91,8 +91,8 @@ class BoxInfo(object):
         #print("Left: " + str(left_box[0]) + " " + str(left_box[1]) + " " + str(left_box[2]) + " " + str(left_box[3]))
         #print("Right: " + str(right_box[0]) + " " + str(right_box[1]) + " " + str(right_box[2]) + " " + str(right_box[3]))
 
-        print("d1: %.2f d2: %.2f d3: %.2f θ: %.2f Ω: %.2f λ: %.2f τ: %.2f u: %.2f" \
-              % (a, d2, b, math.degrees(theta), math.degrees(omega), math.degrees(lambda_angle), math.degrees(tau), math.degrees(self._u)))
+        #print("d1: %.2f d2: %.2f d3: %.2f θ: %.2f Ω: %.2f λ: %.2f τ: %.2f u: %.2f" \
+        #      % (a, d2, b, math.degrees(theta), math.degrees(omega), math.degrees(lambda_angle), math.degrees(tau), math.degrees(self._u)))
 
         # TODO: Find X
         self._x = 0
