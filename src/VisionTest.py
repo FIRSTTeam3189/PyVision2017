@@ -5,14 +5,14 @@ Created on Jan 15, 2017
 '''
 
 import cv2
-from FrameGrabbers import MultithreadedFrameGrabber
+from FrameGrabbers import MultithreadedFrameGrabber, PiCameraFrameGrabber
 from VisionConfiguration import VisionConfiguration
 import numpy
 def pa(x):
     pass
 
 config = VisionConfiguration()
-grabber = MultithreadedFrameGrabber(0, config).start()
+grabber = MultithreadedFrameGrabber(config=config).start()
 
 cv2.namedWindow("controls")
 cv2.createTrackbar("H Low", 'controls', 0, 255, pa)
@@ -33,6 +33,7 @@ high = None
 
 while True:
     frame = grabber.current_frame
+    #print(frame)
     frame = cv2.GaussianBlur(frame, (5, 5), 0)    
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -76,7 +77,7 @@ while True:
 config.low_range = low
 config.high_range = high
 grabber.stop()
-grabber.sync_camera_props()
+#grabber.sync_camera_props()
 cv2.destroyAllWindows()
 config.sync()
     

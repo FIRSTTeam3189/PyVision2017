@@ -1,5 +1,6 @@
 [Unit]
 Description=Robotics Vision Script
+After=uart-enable.service
 
 [Service]
 WorkingDirectory=/var/opt/robot-vision/

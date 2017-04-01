@@ -6,6 +6,10 @@ from imutils.video import FPS
 import sys
 import traceback
 
+# Sleep for 5 before starting, wait for cronjob (@reboot bash /home/pi/gpioenabler.sh) to finish
+sleep(5)
+print("Starting Vision...")
+
 status = StatusLights()
 config = VisionConfiguration.VisionConfiguration()
 status.set_starting_up(True)

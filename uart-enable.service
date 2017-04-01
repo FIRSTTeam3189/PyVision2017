@@ -1,0 +1,13 @@
+[Unit]
+Description=Enables the permission to use UART for pi user
+
+[Service]
+WorkingDirctory=/var/opt/uart-enable/
+SyslogIdentifier=uart-enable
+User=root
+Group=root
+ExecStart=/var/opt/uart-enable/enable-uart
+Restart=no
+
+[Install]
+WantedBy=graphical.target

@@ -20,7 +20,7 @@ class PiCameraFrameGrabber(object):
         if config is None:
             self.camera.resolution = (1280, 720)
             self.camera.framerate = 60
-            self.camera.exposure_compensation = -12
+            self.camera.exposure_compensation = 12
             self.camera.iso = 400
             self.camera.contrast = 50
             self.camera.brightness = 0
