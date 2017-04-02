@@ -3,9 +3,11 @@ from BoxInfo import BoxInfo
 from time import sleep
 from StatusLights import StatusLights
 from imutils.video import FPS
+from SerialComm import RoboSerial
 import subprocess
 import sys
 import traceback
+import struct
 
 ENABLE_UART = "echo | exec /var/opt/uart-enable/uart-enable"
 print("Enabling UART")
@@ -16,6 +18,7 @@ print("Starting Vision...")
 
 status = StatusLights()
 config = VisionConfiguration.VisionConfiguration()
+serial = RoboSerial()
 status.set_starting_up(True)
 
 def shutdown(error=0, blinks=10):
@@ -88,10 +91,8 @@ try:
         for i in xrange(len(boxes)):
             table.send_box( boxes[i], i)
 
-        if len(boxes) == 2:
-            table.send_box_info(BoxInfo(boxes))
-        else:
-            table.send_box_info(None)
+        serial.send(boxes)
+            
 except Exception as e:
     traceback.print_exc()
     print(e)
