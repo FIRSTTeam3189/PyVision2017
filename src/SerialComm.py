@@ -23,7 +23,7 @@ class RoboSerial(object):
         else:
             has_boxes=False
 
-        self.send_raw(has_boxes, offset_x)
+        return self.send_raw(has_boxes, offset_x)
 
     def send_raw(self, has_box, point, prefix=0x77):
         box_flag = 0x01 if has_box else 0x00
@@ -31,3 +31,4 @@ class RoboSerial(object):
         datar.extend(struct.pack("<4Bi", prefix, prefix, prefix, box_flag, int(point)))
 
         self._s.write(datar)
+        return datar
