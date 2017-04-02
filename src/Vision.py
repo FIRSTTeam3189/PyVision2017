@@ -1,4 +1,4 @@
-import cv2, numpy , VisionProcessor, VisionConfiguration, VisionTable, FrameGrabbers
+import cv2, numpy , VisionProcessor, VisionConfiguration, FrameGrabbers
 from BoxInfo import BoxInfo
 from time import sleep
 from StatusLights import StatusLights
@@ -36,7 +36,6 @@ def shutdown(error=0, blinks=10):
     status.release()
     exit(error)
 
-table = VisionTable.VisionTable('vision')
 grabber = None
 
 try:
@@ -53,7 +52,6 @@ while grabber.current_frame is None:
 loops = 0
 fails = 0
 should_shutdown = False
-table.send_is_online(True)
 
 try:
     # Set running light on, startup off
@@ -72,12 +70,10 @@ try:
         boxes = VisionProcessor.process_image(frame, config)
 
         # Send how many images processed, and send how many boxes found
-        table.send_loops(loops)
-        table.send_boxes_found(len(boxes))
         loops += 1
 
         # See if we should shut down
-        should_shutdown = table.get_should_shutdown()
+        should_shutdown = False
 
         if loops % 100 == 0:
             print loops
@@ -88,9 +84,6 @@ try:
             if cv2.waitKey(1) & 0xff == ord("q"):
                 break
     
-        for i in xrange(len(boxes)):
-            table.send_box( boxes[i], i)
-
         serial.send(boxes)
             
 except Exception as e:
