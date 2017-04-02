@@ -100,6 +100,8 @@ echo "Compiling $UART_SRC to $UART_OUT"
 $COMPILE $COMPILE_OUT $UART_OUT $UART_SRC
 cp $UART_OUT $UART_INSTALL_DIR/$UART_OUT
 chmod +x $UART_INSTALL_DIR/$UART_OUT
+chmod u+s $UART_INSTALL_DIR/$UART_OUT
+chmod 777 $UART_INSTALL_DIR/$UART_SCRIPT
 rm $UART_OUT
 
 if [ ! -d "$INSTALL_DIR" ]; then
@@ -122,10 +124,10 @@ chmod 644 $INSTALL_DIR/*.py
 # Enable services
 echo "Enabling Services"
 systemctl daemon-reload
-systemctl enable $UART_SERVICE
+#systemctl enable $UART_SERVICE
 systemctl enable $SERVICE
 
 # Start service
 echo "Starting Services"
-systemctl start $UART_SERVICE
+#systemctl start $UART_SERVICE
 systemctl start $SERVICE

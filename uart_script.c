@@ -2,7 +2,7 @@
 
 int main() {
 	setuid(0);
-	char* script = "./enable-uart.sh";
+	char* script = "/var/opt/uart-enable/enable-uart.sh";
 	int status = system(script);
 	return 0;
 }

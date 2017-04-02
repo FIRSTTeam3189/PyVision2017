@@ -3,11 +3,15 @@ from BoxInfo import BoxInfo
 from time import sleep
 from StatusLights import StatusLights
 from imutils.video import FPS
+import subprocess
 import sys
 import traceback
 
-# Sleep for 5 before starting, wait for cronjob (@reboot bash /home/pi/gpioenabler.sh) to finish
-sleep(5)
+ENABLE_UART = "echo | exec /var/opt/uart-enable/uart-enable"
+print("Enabling UART")
+out = subprocess.check_output(ENABLE_UART, shell=True)
+print(out)
+sleep(1)
 print("Starting Vision...")
 
 status = StatusLights()
